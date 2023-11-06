@@ -2,9 +2,10 @@
 
 Tinder likewise web application containerized (Docker) and done by:
 
-- Front: Figma (marquette), React, TailwindCSS, Cypress (Automated End-to-End testing)
-- Back: Node.js, Express.js
-- Database: GraphQl, Postgre
+- Front: Figma (marquette), React, Typescript TailwindCSS, Cypress (Automated End-to-End testing).
+- Back: Node.js, Express.js, Restful API or NestJs + GraphQl.
+- Database: PostgreSQL.
+- Docker.
 
 ## How to start the project
 
