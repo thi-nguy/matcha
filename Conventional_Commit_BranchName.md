@@ -30,6 +30,6 @@
 ## Examples:
 
 `feature/front/sign_up: add email verification`
-`docs/REAMDE: add notes on how to buil docker`
+`docs/README: add notes on how to build docker`
 
-in which, `feature/front/sign_up` and `docs/REAMDE` are branches' names.
+in which, `feature/front/sign_up` and `docs/README` are branches' names.
