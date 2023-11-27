@@ -6,7 +6,7 @@ import {
   Link,
   ListElementHighlight
 } from '../components/index';
-
+import { useNavigate } from 'react-router-dom';
 
 const dataListBenefit = [
   {
@@ -32,6 +32,8 @@ const SignupPage = () => {
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = () => {
     console.log(username, email, firstname, lastname, password, repeatPassword);
   }
@@ -54,7 +56,7 @@ const SignupPage = () => {
         <TextInput title='Password' placeholder='Chosse a password' value={password} onChange={setPassword} secure={true}/>
         <TextInput title='Repeat password' placeholder='Repeat the password' value={repeatPassword} onChange={setRepeatPassword} secure={true}/>
         <Button title='Submit' onSubmit={handleSubmit}/>
-        <Link title='I already have an account' url='/login'/>
+        <Link title='I already have an account' onClick={() => navigate('/login')}/>
       </div>
     </div>
   );
