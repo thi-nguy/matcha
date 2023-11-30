@@ -37,15 +37,15 @@ const SignupPage = () => {
   }
 
   return (
-    <div className='flex h-screen'>
-      <div className='w-6/12 bg-slate-700 text-white justify-center items-center flex flex-col text-left'>
+    <div className='md:flex h-screen'>
+      <div className='text-center md:text-left md:w-6/12 bg-slate-700 text-white justify-center items-center flex flex-col'>
         <div>
           {dataListBenefit.map((benefit: { title: string, subtitle: string }, index) => {
             return (<ListElementHighlight number={index + 1} title={benefit.title} subtitle={benefit.subtitle} />)
           })}
         </div>
       </div>
-      <div className='w-6/12 justify-center flex flex-col p-20'>
+      <div className='md:w-6/12 justify-center flex flex-col p-20'>
         <Title value='Create your matcha account!'/>
         <TextInput title='Username' placeholder='Your login' value={username} onChange={setUsername}/>
         <TextInput title='Email address' placeholder='john.doe@gmail.com' value={email} onChange={setEmail}/>
