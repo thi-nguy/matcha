@@ -26,6 +26,7 @@ const LoginPage = () => {
         <TextInput title='Password' placeholder='Your password' value={password} onChange={setPassword} secure={true}/>
         <Button title='Submit' onSubmit={handleSubmit}/>
         <Link title="I don't have an account" onClick={() => navigate('/signup')} />
+        <Link title="Forgot your password ?" onClick={() => navigate('/recover-password')} />
       </div>
     </div>
   );
