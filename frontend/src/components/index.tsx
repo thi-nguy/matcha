@@ -4,6 +4,10 @@ import { TextInput } from './TextInput';
 import { Title } from './Title';
 import { ListElementHighlight } from './ListElementHighlight';
 import { Center } from './Center';
+import { Select } from './Select';
+import { TextArea } from './Textarea';
+import { Tags } from './tags';
+import { PictureUpdate } from './pictureUpdate';
 
 export {
   Button,
@@ -11,5 +15,9 @@ export {
   TextInput,
   Title,
   ListElementHighlight,
-  Center
+  Center,
+  Select,
+  TextArea,
+  Tags,
+  PictureUpdate
 }
