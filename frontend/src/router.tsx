@@ -5,6 +5,7 @@ import ConfirmCodePage from './pages/ConfirmCode';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import RecoverPasswordPage from './pages/recoverPassword';
+import ProfilEditPage from './pages/profile/edit';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/recover-password',
     element: <RecoverPasswordPage/>
+  },
+  {
+    path: '/app/profile/edit',
+    element: <ProfilEditPage/>
   }
 ]);
 
