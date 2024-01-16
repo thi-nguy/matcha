@@ -45,9 +45,24 @@
 - `nest g service prisma` or `npx @nestjs/cli g service prisma`
 - `nest g module prisma` or `npx @nestjs/cli g module prisma`
 
-5. Back to basic.
+5. Back to basic
 
-- At this point we have the database connected to our backend project. We now have 2 choices, either using REST our Graphql API at this moment.
+- At this point we have the database connected to our backend project. We now have 2 choices, either using REST or Graphql API.
 - If we use REST: Controller --> Service --> Prisma --> Database
 - If we use Graphql: Resolver --> Service --> Prisma --> Database
-- In this project we use GraphQl. So the next steps will be how to setup Graphql into our project.
+- In this project we'll use GraphQl. So the next steps will be how to setup Graphql into our project.
+
+6. Config Graphql into the project
+
+Ref: https://docs.nestjs.com/graphql/quick-start
+
+- Install required packages (for Express and Apollo): `npm i @nestjs/graphql @nestjs/apollo @apollo/server graphql`
+- At this step, we have 2 approaches: Code first or Schema first. In here we choose Code First approach.
+- Config GraphQlModule in the file `app.module.ts`. (Your approach that you chose above will affect the Config).
+
+7. Start a Post Module to test.
+
+- `nest g resource post` ==> Choose Code first ==> This creates folder `post` that have all necessary files (Post Module / Resolver / Service + DTO and entities). All you need is to modify them to suit your use. I kept only needed files in this case.
+- Now we can go to the playground `localhost:3000/graphql` to test our first graphql query. Before that, you'll need to build your database as in Step 2 and 3. Also you might need to add some data to your database in order to test your query.
+
+8. Connect Backend to Frontend.
