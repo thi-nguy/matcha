@@ -20,6 +20,14 @@ Tinder likewise web application containerized (Docker) and done by:
 - npm start
 - Start building your components.
 
+#### For Backend:
+- cd ./backend
+- Build database by docker: `docker-compose -f docker-compose-just-database.yml up` --> Keep the database opened in a terminal window.
+- Apply Migration to the database: `npx prisma migrate dev`
+- Open Prisma studio to see if database is updated with the migration. (Or we can update database directly by Prisma Studio): `npx prisma studio`
+
+#### Call data from backend
+
 ## Todo List - Preparation Phase
 
 ### Marquette

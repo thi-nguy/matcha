@@ -10,15 +10,15 @@ export class PostService {
     return await this.prisma.post.findMany();
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} post`;
-  // }
+  findOne(id: number) {
+    return `This action returns a #${id} post`;
+  }
 
   // update(id: number, updatePostInput: UpdatePostInput) {
   //   return `This action updates a #${id} post`;
   // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} post`;
-  // }
+  remove(id: number) {
+    return `This action removes a #${id} post`;
+  }
 }
