@@ -2,8 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auth {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateAuthInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Mutation {
+  createAuth(createAuthInput: CreateAuthInput!): Auth!
+  removeAuth(id: Int!): Auth!
   removePost(id: Int!): Post!
+  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
 }
 
 type Post {
@@ -13,6 +26,13 @@ type Post {
 }
 
 type Query {
+  auth(id: Int!): Auth!
   post(id: Int!): Post!
   posts: [Post!]!
+}
+
+input UpdateAuthInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
