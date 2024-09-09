@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Mutation {
+  removePost(id: Int!): Post!
+}
+
 type Post {
   content: String!
   id: ID!
@@ -9,5 +13,6 @@ type Post {
 }
 
 type Query {
+  post(id: Int!): Post!
   posts: [Post!]!
 }
