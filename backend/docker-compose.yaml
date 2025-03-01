@@ -7,7 +7,9 @@ services:
     environment:
       POSTGRES_USER: nhung
       POSTGRES_PASSWORD: meomeo
-      POSGRES_DB: nest_db
+      POSTGRES_DB: matcha-db
+    volumes:
+      - ./docker:/docker-entrypoint-initdb.d
     networks:
       - meomeomeo
 networks:
