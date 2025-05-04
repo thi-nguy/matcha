@@ -1,15 +1,62 @@
+import { ReactNode } from "react";
+
+interface ButtonProp extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  // variant?: "contained" | "outlined" | "text";
+  // color?: "primary" | "secondary";
+  variant?: "contained";
+  color?: "primary";
+  size?: "small" | "medium" | "large";
+  disabled?: boolean;
+  children: ReactNode;
+}
+
 export const Button = ({
-  title,
-  variant = 'success',
-  onSubmit
-}: {
-  title: string,
-  variant?: string,
-  onSubmit: () => void
-}) => {
+  variant = "contained",
+  color = "primary",
+  size = "medium",
+  disabled = false,
+  children,
+  className,
+  ...props
+}: ButtonProp) => {
+  const baseStyle =
+    "font-medium rounded-3xl transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const variantStyle = {
+    contained: {
+      primary:
+        "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
+      // secondary: "",
+    },
+    // outlined: {
+    //   primary: "",
+    //   secondary: "",
+    // },
+    // text: {
+    //   primary: "",
+    //   secondary: "",
+    // },
+  };
+
+  const sizeStyle = {
+    small: "",
+    medium: "px-4 py-2 text-base",
+    large: "",
+  };
+
+  const classes = [
+    baseStyle,
+    variantStyle[variant][color],
+    sizeStyle[size],
+    disabled ? "opacity-50 cursor-not-allowed" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className='cursor-pointer text-center bg-green-500 rounded-3xl m-2.5 w-auto mt-5 p-1' onClick={onSubmit}>
-      <button className='text-white'>{title}</button>
-    </div>
-  )
+    <button className={classes} disabled={disabled} {...props}>
+      {children}
+      <div className=""></div>
+    </button>
+  );
 };
