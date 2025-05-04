@@ -56,7 +56,7 @@ const SignupPage = () => {
           )}
         </div>
       </div>
-      <div className="md:w-6/12 justify-center flex flex-col p-20">
+      <div className="md:w-6/12 flex flex-col justify-center items-center p-20">
         <Title value="Create your matcha account!" />
         <TextInput
           title="Username"
@@ -96,7 +96,7 @@ const SignupPage = () => {
           onChange={setRepeatPassword}
           secure={true}
         />
-        <Button title="Submit" onSubmit={handleSubmit} />
+        <Button onClick={handleSubmit}>Submit</Button>
         <Link
           title="I already have an account"
           onClick={() => navigate("/login")}
