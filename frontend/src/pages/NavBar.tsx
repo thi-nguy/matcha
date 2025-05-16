@@ -5,24 +5,24 @@ import { NavLink } from "react-router-dom";
 const PageList = [
     {
         url: "/chat",
-        name: "chat",
+        name: "Chat",
         icon: <IoChatbubbleOutline />
     },
     {
         url: "/discover",
-        name: "discover",
+        name: "Discover",
         icon: <IoAlbumsOutline />,
     },
     {
         url: "/profile",
-        name: "profile",
+        name: "My profile",
         icon: <MdOutlineAccountCircle />,
     },
 ];
 export const NavBar = () => {
     return (
         <div className="">
-            <div className="flex-col">{PageList.map((onePage, i) => {
+            <div className="flex-col w-1/6">{PageList.map((onePage, i) => {
                 return (
                     <NavLink to={onePage.url} key={i}>
                         {onePage.icon}
