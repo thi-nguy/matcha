@@ -4,6 +4,6 @@ import '@testing-library/jest-dom';
 import { Button } from './Button';
 
 test('Assert that button has the correct text', async() => {
-  render(<Button title='Submit' />);
+  render(<Button>Submit</Button>);
   expect(screen.getByRole('button')).toHaveTextContent('Submit');
 });
