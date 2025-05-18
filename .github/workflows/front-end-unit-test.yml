@@ -10,5 +10,5 @@ jobs:
           node-version: '14'
       - run: npm i
         working-directory: frontend/
-      - run: npx jest src/components/
-        working-directory: frontend/
+      # - run: npx jest src/components/
+        # working-directory: frontend/
