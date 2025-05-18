@@ -56,7 +56,6 @@ export const Button = ({
   return (
     <button className={classes} disabled={disabled} {...props}>
       {children}
-      <div className=""></div>
     </button>
   );
 };
