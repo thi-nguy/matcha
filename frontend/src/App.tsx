@@ -13,11 +13,13 @@ function App() {
   return (
     <div>
       <NavBar />
-      <Routes>
-        {AllRoutes.map((onePage, i) => {
-          return (<Route key={i} path={onePage.url} element={onePage.element} />)
-        })}
-      </Routes>
+      <div className="ml-28 sm:ml-40">
+        <Routes>
+          {AllRoutes.map((onePage, i) => {
+            return (<Route key={i} path={onePage.url} element={onePage.element} />)
+          })}
+        </Routes>
+      </div>
     </div>
   );
 }
