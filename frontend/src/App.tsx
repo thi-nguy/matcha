@@ -11,9 +11,9 @@ const AllRoutes = [
 function App() {
 
   return (
-    <div>
+    <div className="flex">
       <NavBar />
-      <div className="ml-28 sm:ml-40">
+      <div>
         <Routes>
           {AllRoutes.map((onePage, i) => {
             return (<Route key={i} path={onePage.url} element={onePage.element} />)

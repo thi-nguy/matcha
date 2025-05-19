@@ -4,7 +4,6 @@ import { MdOutlineAccountCircle } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import logo from '../assets/match-dark.svg'
 import smallLogo from '../assets/logo_match.svg'
-import { Button } from "../components";
 import { ProfileDrawer } from "../components/ProfileDrawer";
 import { Drawer } from "../components/Drawer";
 import { useState } from "react";
@@ -32,22 +31,27 @@ export const NavBar = () => {
         setIsDrawerOpen(!isDrawerOpen);
     }
 
+    const NavLinkBaseStyle = "flex flex-col sm:flex-row gap-2 p-2 items-center hover:bg-[rgb(219,166,186)] rounded-lg";
+
     return (
-        <div className="fixed top-0 left-0 flex flex-col items-center">
-            <img src={logo} alt="Logo" className="h-12 w-26 hidden sm:block" />
+        <div className="flex flex-col items-center p-4">
+            <img src={logo} alt="Logo" className="h-16 w-26 hidden sm:block" />
             <img src={smallLogo} alt="Small Logo" className="h-16 w-26 sm:hidden" />
 
-            <div className="flex flex-col gap-2 p-4">
+            <div className="flex flex-col gap-2 p-2">
                 {PageList.map((onePage, i) => {
                     return (
-                        <NavLink to={onePage.url} key={i} className={({ isActive }) => `flex flex-col sm:flex-row gap-2 p-2 items-center hover:bg-[rgb(219,166,186)] rounded-lg ${isActive ? 'bg-[rgb(243,205,219)] text-pink-700' : 'bg-white'}`} >
+                        <NavLink to={onePage.url} key={i} className={({ isActive }) => `${NavLinkBaseStyle} ${isActive ? 'bg-[rgb(243,205,219)] text-pink-700' : 'bg-white'}`} >
                             {onePage.icon}
                             <span>{onePage.name}</span>
                         </NavLink>
                     )
                 })}
-                <Button onClick={toggleDrawer}>Profile drawer</Button>
-                <Drawer open={isDrawerOpen} onClose={toggleDrawer}><ProfileDrawer /></Drawer>
+                <button onClick={toggleDrawer} className={NavLinkBaseStyle}>
+                    <MdOutlineAccountCircle />
+                    <span>My profiles</span>
+                </button>
+                {isDrawerOpen && <Drawer><ProfileDrawer /></Drawer>}
             </div>
         </div>
     );
