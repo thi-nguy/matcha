@@ -2,9 +2,8 @@ import { ReactNode } from "react";
 
 interface ButtonProp extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   // variant?: "contained" | "outlined" | "text";
-  // color?: "primary" | "secondary";
+  color?: "primary" | "secondary";
   variant?: "contained";
-  color?: "primary";
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   children: ReactNode;
@@ -25,7 +24,7 @@ export const Button = ({
     contained: {
       primary:
         "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
-      // secondary: "",
+      secondary: "bg-gray-200 hover:bg-gray-300 focus:ring-gray-300",
     },
     // outlined: {
     //   primary: "",

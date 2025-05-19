@@ -1,23 +1,13 @@
 import { ReactNode } from "react";
 
 interface DrawerProp {
-    open: boolean;
-    anchor?: "left" | "right" | "top" | "bottom";
-    onClose: () => void;
     children: ReactNode;
 }
-export const Drawer = ({ open, anchor = "left", children }: DrawerProp) => {
-    const baseStyle = "";
-    const positionStyle = {
-        left: open ? "translate-x-0" : "translate-x-full",
-        right: "",
-        top: "",
-        bottom: ""
-    }
-    const classes = [baseStyle, positionStyle[anchor]].filter(Boolean).join(" ");
+export const Drawer = ({ children }: DrawerProp) => {
+    const baseStyle = "bg-white w-80 fixed left-40 top-32 shadow-lg rounded-3xl";
 
     return (
-        <div className={classes}>
+        <div className={baseStyle}>
             {children}
         </div>
     )
