@@ -21,7 +21,7 @@ const PageList = [
     },
     {
         url: "/profile",
-        name: "My profile",
+        name: "test test test test test",
         icon: <MdOutlineAccountCircle />,
     },
 ];
@@ -31,28 +31,30 @@ export const NavBar = () => {
         setIsDrawerOpen(!isDrawerOpen);
     }
 
-    const NavLinkBaseStyle = "flex flex-col sm:flex-row gap-2 p-2 items-center hover:bg-[rgb(219,166,186)] rounded-lg";
+    const NavLinkBaseStyle = "flex flex-col sm:flex-row gap-2 p-2 text-center items-center hover:bg-[rgb(219,166,186)] rounded-lg";
 
     return (
-        <div className="flex flex-col items-center p-4">
-            <img src={logo} alt="Logo" className="h-16 w-26 hidden sm:block" />
-            <img src={smallLogo} alt="Small Logo" className="h-16 w-26 sm:hidden" />
+        <div className="relative">
+            <div className="flex flex-col items-center p-4">
+                <img src={logo} alt="Logo" className="h-16 w-26 hidden sm:block" />
+                <img src={smallLogo} alt="Small Logo" className="h-16 w-26 sm:hidden" />
 
-            <div className="flex flex-col gap-2 p-2">
-                {PageList.map((onePage, i) => {
-                    return (
-                        <NavLink to={onePage.url} key={i} className={({ isActive }) => `${NavLinkBaseStyle} ${isActive ? 'bg-[rgb(243,205,219)] text-pink-700' : 'bg-white'}`} >
-                            {onePage.icon}
-                            <span>{onePage.name}</span>
-                        </NavLink>
-                    )
-                })}
-                <button onClick={toggleDrawer} className={NavLinkBaseStyle}>
-                    <MdOutlineAccountCircle />
-                    <span>My profiles</span>
-                </button>
-                {isDrawerOpen && <Drawer><ProfileDrawer /></Drawer>}
+                <div className="flex flex-col gap-2 p-2">
+                    {PageList.map((onePage, i) => {
+                        return (
+                            <NavLink to={onePage.url} key={i} className={({ isActive }) => `${NavLinkBaseStyle} ${isActive ? 'bg-[rgb(243,205,219)] text-pink-700' : 'bg-white'}`} >
+                                {onePage.icon}
+                                <span className="whitespace-nowrap">{onePage.name}</span>
+                            </NavLink>
+                        )
+                    })}
+                    <button onClick={toggleDrawer} className={NavLinkBaseStyle}>
+                        <MdOutlineAccountCircle />
+                        <span className="whitespace-nowrap">My profiles</span>
+                    </button>
+                </div>
             </div>
+            {isDrawerOpen && <Drawer><ProfileDrawer /></Drawer>}
         </div>
     );
 };
