@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 
 interface ButtonProp extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  // variant?: "contained" | "outlined" | "text";
   color?: "primary" | "secondary";
   variant?: "contained";
   size?: "small" | "medium" | "large";
@@ -19,7 +18,7 @@ export const Button = ({
   ...props
 }: ButtonProp) => {
   const baseStyle =
-    "font-medium rounded-3xl transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+    "flex items-center gap-2 font-medium rounded-3xl transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 px-4 py-2 ";
   const variantStyle = {
     contained: {
       primary:
@@ -37,8 +36,8 @@ export const Button = ({
   };
 
   const sizeStyle = {
-    small: "",
-    medium: "px-4 py-2 text-base",
+    small: "text-xs",
+    medium: "text-base",
     large: "",
   };
 
