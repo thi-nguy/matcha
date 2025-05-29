@@ -12,6 +12,7 @@ import { FaPlus } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 import { FiMinusCircle } from "react-icons/fi";
+import { Tooltip } from "../../components/Tooltip";
 
 export const ProfileEdit = () => {
 
@@ -19,10 +20,10 @@ export const ProfileEdit = () => {
   const [photoUrl, setPhotoUrl] = useState<string[]>(Array(4).fill(null));
 
   const photoList = [
-    { src: avatar1 },
     { src: avatar3 },
-    { src: null },
-    { src: null },
+    { src: avatar3 },
+    { src: avatar3 },
+    { src: avatar3 },
   ];
 
   const handleSelectFiles = (event: ChangeEvent<HTMLInputElement>) => {
@@ -64,10 +65,17 @@ export const ProfileEdit = () => {
         <div className="h-[33.33vh] grid grid-cols-4 grid-rows-2 gap-4 items-stretch">
           <img src={avatar2} alt="avatar" className="col-span-2 row-span-2 rounded-3xl object-cover" />
 
-          {photoList.map((onePhoto) => {
+          {photoList.map((onePhoto, index) => {
             return (onePhoto.src ? (<div className="relative">
-              <img className="rounded-3xl object-cover" src={onePhoto.src} alt="user_photo" />
-              <div className="absolute top-0 right-0 flex gap-2"><RxAvatar /><FiMinusCircle /></div></div>) : (<div className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-3xl" onClick={handleOpenModal}><FaPlus /></div>)
+              <img key={index} className="rounded-3xl object-cover" src={onePhoto.src} alt="user_photo" />
+              <div key={index} className="absolute top-0 right-0 flex gap-2">
+                <Tooltip content="Use as avatar" >
+                  <RxAvatar className="text-2xl hover:text-3xl text-gray-600" />
+                </Tooltip>
+                <Tooltip content="Remove photo">
+                  <FiMinusCircle className="text-2xl hover:text-3xl text-gray-600" />
+                </Tooltip>
+              </div></div>) : (<div className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-3xl " onClick={handleOpenModal}><FaPlus className="text-2xl text-gray-600" /></div>)
             )
           })}
         </div>
