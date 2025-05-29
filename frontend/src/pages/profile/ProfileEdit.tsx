@@ -3,24 +3,45 @@ import { FaRegEye } from "react-icons/fa";
 import { Button } from "../../components/Button";
 import avatar1 from "../../assets/avatar1.jpeg";
 import avatar2 from "../../assets/avatar2.jpeg";
+import avatar3 from "../../assets/avatar3.jpeg";
 import wave from "../../assets/layered-waves-haikei.svg";
 import { BiSolidQuoteAltLeft } from "react-icons/bi";
 import { TbListTree } from "react-icons/tb";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
+import { IoMdClose } from "react-icons/io";
+import { RxAvatar } from "react-icons/rx";
+import { FiMinusCircle } from "react-icons/fi";
 
 export const ProfileEdit = () => {
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [photoUrl, setPhotoUrl] = useState<string[]>(Array(4).fill(null));
+
+  const photoList = [
+    { src: avatar1 },
+    { src: avatar3 },
+    { src: null },
+    { src: null },
+  ];
 
   const handleSelectFiles = (event: ChangeEvent<HTMLInputElement>) => {
     const photoSelected = event.target.files?.[0];
     if (photoSelected) {
       const url = URL.createObjectURL(photoSelected);
     }
-
   }
+  const handleCloseModal = () => {
+    if (isModalOpen) {
+      setIsModalOpen(false);
+    }
+  }
+  const handleOpenModal = () => {
+    if (!isModalOpen) {
+      setIsModalOpen(true);
+    }
+  }
+
   return (
     <div>
       {/* Change photo section */}
@@ -41,38 +62,30 @@ export const ProfileEdit = () => {
         </div>
 
         <div className="h-[33.33vh] grid grid-cols-4 grid-rows-2 gap-4 items-stretch">
-          <div className="col-span-2 row-span-2 flex justify-center items-center rounded-3xl bg-gray-200"><FaPlus /></div>
-          <div className="flex justify-center items-center bg-gray-200 rounded-3xl"><FaPlus /></div>
-          <div className="flex justify-center items-center bg-gray-200 rounded-3xl"><FaPlus /></div>
-          <div className="flex justify-center items-center bg-gray-200 rounded-3xl"><FaPlus /></div>
-          <div className="flex justify-center items-center bg-gray-200 rounded-3xl"><FaPlus /></div>
-          {/* <img
-            className="rounded-3xl 
-            col-span-2 row-span-2"
-            src={avatar1}
-            alt="avatar"
-          />
-          <img className="rounded-3xl" src={avatar2} alt="avatar" />
-          <img className="rounded-3xl" src={avatar2} alt="avatar" />
-          <img className="rounded-3xl" src={avatar2} alt="avatar" />
-          <img className="rounded-3xl" src={avatar2} alt="avatar" /> */}
-        </div>
+          <img src={avatar2} alt="avatar" className="col-span-2 row-span-2 rounded-3xl object-cover" />
 
-        <div className="flex justify-end gap-4 p-4">
-          <Button size="small" color="secondary">
-            Change my photos
-          </Button>
-          <Button size="small" color="primary">
-            Add a new photo
-          </Button>
+          {photoList.map((onePhoto) => {
+            return (onePhoto.src ? (<div className="relative">
+              <img className="rounded-3xl object-cover" src={onePhoto.src} alt="user_photo" />
+              <div className="absolute top-0 right-0 flex gap-2"><RxAvatar /><FiMinusCircle /></div></div>) : (<div className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-3xl" onClick={handleOpenModal}><FaPlus /></div>)
+            )
+          })}
         </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="h-[75vh] w-[50vw] flex flex-col justify-center items-center gap-4 bg-red-100 rounded-xl shadow-slate-300 shadow-2xl">
-          <div className="h-[60vh] w-[33vw] bg-gray-100 border-2 border-dashed border-gray-400 flex justify-center items-center rounded-xl">Drap and Drop your photos here</div>
-          <input type="file" onChange={handleSelectFiles} accept="image/*"></input>
+        <div className="h-screen w-screen bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center">
+
+          <div className="h-[75vh] w-[50vw] flex flex-col justify-center items-center gap-4 rounded-xl bg-white shadow-slate-300 shadow-2xl p-4">
+            <IoMdClose className="self-end hover:scale-150 transition-transform" onClick={handleCloseModal} />
+            <div className="h-[60vh] w-[33vw] bg-gray-100 hover:bg-gray-200 border-2 border-dashed border-gray-400 flex justify-center items-center rounded-xl">Drap and Drop your photos here</div>
+            <input type="file" onChange={handleSelectFiles} accept="image/*"></input>
+            <div className="flex gap-4">
+              <Button size="small" color="secondary" onClick={handleCloseModal}>Cancel</Button>
+              <Button size="small" color="primary">Upload</Button>
+            </div>
+          </div>
         </div>
       )
       }
