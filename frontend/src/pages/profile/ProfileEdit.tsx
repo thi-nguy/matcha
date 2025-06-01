@@ -13,6 +13,8 @@ import { IoMdClose } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 import { FiMinusCircle } from "react-icons/fi";
 import { Tooltip } from "../../components/Tooltip";
+import camera from "../../assets/camera.jpg"
+import { Title } from "../../components/Title";
 
 export const ProfileEdit = () => {
 
@@ -22,8 +24,8 @@ export const ProfileEdit = () => {
   const photoList = [
     { src: avatar3 },
     { src: avatar3 },
-    { src: avatar3 },
-    { src: avatar3 },
+    { src: "" },
+    { src: "" },
   ];
 
   const handleSelectFiles = (event: ChangeEvent<HTMLInputElement>) => {
@@ -85,14 +87,17 @@ export const ProfileEdit = () => {
       {isModalOpen && (
         <div className="h-screen w-screen bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center">
 
-          <div className="h-[75vh] w-[50vw] flex flex-col justify-center items-center gap-4 rounded-xl bg-white shadow-slate-300 shadow-2xl p-4">
+          <div className="h-2/3 w-1/2 flex flex-col justify-center items-center gap-4 rounded-3xl bg-white shadow-slate-300 shadow-2xl p-4">
             <IoMdClose className="self-end hover:scale-150 transition-transform" onClick={handleCloseModal} />
-            <div className="h-[60vh] w-[33vw] bg-gray-100 hover:bg-gray-200 border-2 border-dashed border-gray-400 flex justify-center items-center rounded-xl">Drap and Drop your photos here</div>
-            <input type="file" onChange={handleSelectFiles} accept="image/*"></input>
-            <div className="flex gap-4">
-              <Button size="small" color="secondary" onClick={handleCloseModal}>Cancel</Button>
-              <Button size="small" color="primary">Upload</Button>
+            <img src={camera} alt="camera" className="h-[20vh] rounded-3xl" />
+            <Title value="A photo that clearly shows your face. Includes you only. Free from offensive content"></Title>
+            <p>Upload a photo to get more attention.</p>
+            <div className="h-1/3 bg-gray-100 hover:bg-gray-200 border-2 border-dashed border-gray-400 flex flex-col justify-center items-center rounded-xl p-4">
+              <p>Drop your picture here or</p>
+              <p className="underline">upload it from your computer</p>
+              <input type="file" onChange={handleSelectFiles} accept="image/*" className="hidden"></input>
             </div>
+            <Button size="small" color="secondary" onClick={handleCloseModal}>Cancel</Button>
           </div>
         </div>
       )
@@ -104,13 +109,7 @@ export const ProfileEdit = () => {
           <BiSolidQuoteAltLeft />
           <span>My description</span>
         </div>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci
-          cupiditate quas! Laudantium est ea maiores consectetur dolor magni, a
-          quos est repellendus eaque amet, voluptate doloribus sunt consequatur
-          soluta molestiae.
-        </p>
-
+        <textarea rows={5} className="w-full p-2 border border-gray-300 rounded" placeholder="My personality, my expectations, my passion..."></textarea>
         <div className="flex items-center gap-2 text-3xl font-bold">
           <TbListTree />
           <span>I am</span>
