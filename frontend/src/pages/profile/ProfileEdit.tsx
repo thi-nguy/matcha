@@ -1,49 +1,121 @@
 import { IoCameraOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { Button } from "../../components/Button";
-import avatar1 from "../../assets/avatar1.jpeg";
-import avatar2 from "../../assets/avatar2.jpeg";
-import avatar3 from "../../assets/avatar3.jpeg";
 import wave from "../../assets/layered-waves-haikei.svg";
 import { BiSolidQuoteAltLeft } from "react-icons/bi";
 import { TbListTree } from "react-icons/tb";
-import { ChangeEvent, MouseEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 import { FiMinusCircle } from "react-icons/fi";
 import { Tooltip } from "../../components/Tooltip";
-import camera from "../../assets/camera.jpg"
+import camera from "../../assets/camera.jpg";
 import { Title } from "../../components/Title";
 
+interface Photo {
+  id: string;
+  url: string;
+  isAvatar: boolean;
+}
+
 export const ProfileEdit = () => {
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [photoUrl, setPhotoUrl] = useState<string[]>(Array(4).fill(null));
+  const [photoList, setPhotoList] = useState<Photo[]>([]);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [photoSelectError, setPhotoSelectError] = useState<string>();
 
-  const photoList = [
-    { src: avatar3 },
-    { src: avatar3 },
-    { src: "" },
-    { src: "" },
-  ];
+  const MAX_PHOTOS = 4;
+  const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+  const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
+
+  const handleFileValidation = (file: File): string | null => {
+    if (file.size > MAX_SIZE) {
+      return `The image size is too large. Please ensure it does not exceed ${
+        MAX_SIZE / 1024 / 1024
+      }MB`;
+    }
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      return "Only accept photos of type JPG, JPEG or PNG";
+    }
+    return null;
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragging(false);
+
+    const file = event.dataTransfer.files[0];
+    if (!file) return;
+
+    const validationError = handleFileValidation(file);
+    if (validationError) {
+      setPhotoSelectError(validationError);
+      return;
+    }
+
+    try {
+      const url = URL.createObjectURL(file);
+      setPhotoList([
+        ...photoList,
+        { id: Date.now().toString(), url, isAvatar: photoList.length === 0 },
+      ]);
+      setPhotoSelectError(undefined);
+      setIsModalOpen(false);
+    } catch (err) {
+      setPhotoSelectError("An error occurred while uploading the image");
+    }
+  };
 
   const handleSelectFiles = (event: ChangeEvent<HTMLInputElement>) => {
-    const photoSelected = event.target.files?.[0];
-    if (photoSelected) {
-      const url = URL.createObjectURL(photoSelected);
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const validationError = handleFileValidation(file);
+    if (validationError) {
+      setPhotoSelectError(validationError);
+      return;
     }
-  }
-  const handleCloseModal = () => {
-    if (isModalOpen) {
+
+    try {
+      const url = URL.createObjectURL(file);
+      setPhotoList([
+        ...photoList,
+        { id: Date.now().toString(), url, isAvatar: photoList.length === 0 },
+      ]);
+      setPhotoSelectError(undefined);
       setIsModalOpen(false);
+    } catch (err) {
+      setPhotoSelectError("An error occurred while uploading the image");
     }
-  }
-  const handleOpenModal = () => {
-    if (!isModalOpen) {
-      setIsModalOpen(true);
+  };
+
+  const handleSetAsAvatar = (photoId: string) => {
+    setPhotoList(
+      photoList.map((photo) => ({ ...photo, isAvatar: photo.id === photoId }))
+    );
+  };
+
+  const handleRemovePhoto = (photoId: string) => {
+    const updatedPhotoList = photoList.filter((photo) => photo.id !== photoId);
+    if (
+      photoList.find((photo) => photo.id === photoId)?.isAvatar &&
+      updatedPhotoList.length > 0
+    ) {
+      updatedPhotoList[0].isAvatar = true;
     }
-  }
+    setPhotoList(updatedPhotoList);
+  };
 
   return (
     <div>
@@ -65,72 +137,161 @@ export const ProfileEdit = () => {
         </div>
 
         <div className="h-[33.33vh] grid grid-cols-4 grid-rows-2 gap-4 items-stretch">
-          <img src={avatar2} alt="avatar" className="col-span-2 row-span-2 rounded-3xl object-cover" />
-
           {photoList.map((onePhoto, index) => {
-            return (onePhoto.src ? (<div className="relative">
-              <img key={index} className="rounded-3xl object-cover" src={onePhoto.src} alt="user_photo" />
-              <div key={index} className="absolute top-0 right-0 flex gap-2">
-                <Tooltip content="Use as avatar" >
-                  <RxAvatar className="text-2xl hover:text-3xl text-gray-600" />
-                </Tooltip>
-                <Tooltip content="Remove photo">
-                  <FiMinusCircle className="text-2xl hover:text-3xl text-gray-600" />
-                </Tooltip>
-              </div></div>) : (<div className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-3xl " onClick={handleOpenModal}><FaPlus className="text-2xl text-gray-600" /></div>)
-            )
+            return (
+              <div className="relative">
+                {onePhoto.isAvatar ? (
+                  <img
+                    key={index}
+                    className="rounded-3xl object-cover"
+                    src={onePhoto.url}
+                    alt="user_avatar"
+                  ></img>
+                ) : (
+                  <img
+                    key={index}
+                    className="rounded-3xl object-cover"
+                    src={onePhoto.url}
+                    alt="user_photo"
+                  />
+                )}
+                <div
+                  key={index}
+                  className="absolute top-0 right-0 flex gap-2 bg-black bg-opacity-50 rounded-lg"
+                >
+                  <Tooltip
+                    content="Use as avatar"
+                    activate={onePhoto.isAvatar ? false : true}
+                  >
+                    <RxAvatar
+                      className={`text-2xl cursor-pointer ${
+                        onePhoto.isAvatar
+                          ? "text-yellow-400"
+                          : "text-white hover:text-yellow-400"
+                      }`}
+                      onClick={() => handleSetAsAvatar(onePhoto.id)}
+                    />
+                  </Tooltip>
+                  <Tooltip content="Remove photo">
+                    <FiMinusCircle
+                      className="text-2xl cursor-pointer text-white hover:text-red-500 "
+                      onClick={() => handleRemovePhoto(onePhoto.id)}
+                    />
+                  </Tooltip>
+                </div>
+              </div>
+            );
           })}
+          {photoList.length < MAX_PHOTOS && (
+            <div
+              className="flex justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-3xl "
+              onClick={() => setIsModalOpen(true)}
+            >
+              <FaPlus className="text-2xl text-gray-600" />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="h-screen w-screen bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center">
+        <div className="bg-black bg-opacity-50 fixed inset-0 z-50 flex justify-center items-center">
+          <div
+            className="w-[50vw] flex flex-col justify-center items-center gap-4 rounded-xl bg-white shadow-slate-300 shadow-2xl p-4"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <IoMdClose
+              className="text-2xl hover:scale-150 transition-transform self-end"
+              onClick={() => {
+                setIsModalOpen(false);
+                setPhotoSelectError(undefined);
+              }}
+            />
 
-          <div className="h-2/3 w-1/2 flex flex-col justify-center items-center gap-4 rounded-3xl bg-white shadow-slate-300 shadow-2xl p-4">
-            <IoMdClose className="self-end hover:scale-150 transition-transform" onClick={handleCloseModal} />
-            <img src={camera} alt="camera" className="h-[20vh] rounded-3xl" />
-            <Title value="A photo that clearly shows your face. Includes you only. Free from offensive content"></Title>
-            <p>Upload a photo to get more attention.</p>
-            <div className="h-1/3 bg-gray-100 hover:bg-gray-200 border-2 border-dashed border-gray-400 flex flex-col justify-center items-center rounded-xl p-4">
-              <p>Drop your picture here or</p>
-              <p className="underline">upload it from your computer</p>
-              <input type="file" onChange={handleSelectFiles} accept="image/*" className="hidden"></input>
+            <h2 className="text-2xl font-bold">Upload your photo</h2>
+
+            <div
+              className={`h-[60vh] w-[33vw] bg-gray-100 hover:bg-gray-200 border-2 border-dashed rounded-xl flex flex-col justify-center items-center gap-4 ${
+                isDragging ? `border-blue-400 bg-blue-200` : `border-gray-400`
+              }`}
+            >
+              <FaPlus className="text-2xl text-gray-600" />
+              <p>Drag and Drop your photo here or</p>
+              <label className="cursor-pointer text-blue-500 hover:text-blue-600">
+                <span>Select from your device</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleSelectFiles}
+                  accept="image/*"
+                ></input>
+              </label>
+              {photoSelectError && (
+                <p className="text-red-500 font-bold">{photoSelectError}</p>
+              )}
             </div>
-            <Button size="small" color="secondary" onClick={handleCloseModal}>Cancel</Button>
+
+            <div className="text-sm text-gray-600">
+              <p>• Accepted File: JPG, JPEG, PNG</p>
+              <p>• Size Max: 5MB</p>
+              <p>• Max Number of photos: {MAX_PHOTOS}</p>
+            </div>
+
+            <div className="flex gap-4">
+              <Button
+                size="small"
+                color="secondary"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setPhotoSelectError(undefined);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button size="small" color="primary">
+                Upload
+              </Button>
+            </div>
           </div>
         </div>
-      )
-      }
+      )}
 
       {/* Description Section */}
       <div>
-        <div className="flex items-center gap-2 text-3xl font-bold">
+        <div className="flex items-center gap-2 text-3xl font-bold m-4">
           <BiSolidQuoteAltLeft />
           <span>My description</span>
         </div>
-        <textarea rows={5} className="w-full p-2 border border-gray-300 rounded" placeholder="My personality, my expectations, my passion..."></textarea>
-        <div className="flex items-center gap-2 text-3xl font-bold">
+        <textarea
+          rows={4}
+          maxLength={2000}
+          placeholder="My hobbies, my passion..."
+          className="w-full p-4 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 "
+        ></textarea>
+
+        <div className="flex items-center gap-2 text-3xl font-bold m-4">
           <TbListTree />
           <span>I am</span>
         </div>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci
-          cupiditate quas! Laudantium est ea maiores consectetur dolor magni, a
-          quos est repellendus eaque amet, voluptate doloribus sunt consequatur
-          soluta molestiae.
-        </p>
+        <textarea
+          rows={4}
+          maxLength={2000}
+          placeholder="My hobbies, my passion..."
+          className="w-full p-4 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 "
+        ></textarea>
 
-        <div className="flex items-center gap-2 text-3xl font-bold">
+        <div className="flex items-center gap-2 text-3xl font-bold m-4">
           <TbListTree />
           <span>I am looking for</span>
         </div>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci
-          magni, a quos est repellendus eaque amet, voluptate doloribus sunt
-          cupiditate quas! Laudantium est ea maiores consectetur dolor
-          consequatur soluta molestiae.
-        </p>
+        <textarea
+          rows={4}
+          maxLength={2000}
+          placeholder="My hobbies, my passion..."
+          className="w-full p-4 text-gray-700 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 "
+        ></textarea>
       </div>
     </div>
   );
