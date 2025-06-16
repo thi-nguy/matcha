@@ -10,6 +10,7 @@ import { IoMdClose } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 import { FiMinusCircle } from "react-icons/fi";
 import { Tooltip } from "../../components/Tooltip";
+import { ImageCropper } from "../../components/ImageCropper";
 import camera from "../../assets/camera.jpg";
 import { Title } from "../../components/Title";
 
@@ -24,6 +25,7 @@ export const ProfileEdit = () => {
   const [photoList, setPhotoList] = useState<Photo[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [photoSelectError, setPhotoSelectError] = useState<string>();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const MAX_PHOTOS = 4;
   const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -65,13 +67,14 @@ export const ProfileEdit = () => {
     }
 
     try {
-      const url = URL.createObjectURL(file);
-      setPhotoList([
-        ...photoList,
-        { id: Date.now().toString(), url, isAvatar: photoList.length === 0 },
-      ]);
-      setPhotoSelectError(undefined);
-      setIsModalOpen(false);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setSelectedImage(e.target.result as string);
+          setPhotoSelectError(undefined);
+        }
+      };
+      reader.readAsDataURL(file);
     } catch (err) {
       setPhotoSelectError("An error occurred while uploading the image");
     }
@@ -88,13 +91,14 @@ export const ProfileEdit = () => {
     }
 
     try {
-      const url = URL.createObjectURL(file);
-      setPhotoList([
-        ...photoList,
-        { id: Date.now().toString(), url, isAvatar: photoList.length === 0 },
-      ]);
-      setPhotoSelectError(undefined);
-      setIsModalOpen(false);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setSelectedImage(e.target.result as string);
+          setPhotoSelectError(undefined);
+        }
+      };
+      reader.readAsDataURL(file);
     } catch (err) {
       setPhotoSelectError("An error occurred while uploading the image");
     }
@@ -196,65 +200,69 @@ export const ProfileEdit = () => {
       {/* Modal */}
       {isModalOpen && (
         <div className="bg-black bg-opacity-50 fixed inset-0 z-50 flex justify-center items-center">
-          <div
-            className="w-[50vw] flex flex-col justify-center items-center gap-4 rounded-xl bg-white shadow-slate-300 shadow-2xl p-4"
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            <IoMdClose
-              className="text-2xl hover:scale-150 transition-transform self-end"
-              onClick={() => {
-                setIsModalOpen(false);
-                setPhotoSelectError(undefined);
-              }}
-            />
-
-            <h2 className="text-2xl font-bold">Upload your photo</h2>
-
+          {selectedImage ? (
+            <ImageCropper imgUrl={selectedImage} />
+          ) : (
             <div
-              className={`h-[60vh] w-[33vw] bg-gray-100 hover:bg-gray-200 border-2 border-dashed rounded-xl flex flex-col justify-center items-center gap-4 ${
-                isDragging ? `border-blue-400 bg-blue-200` : `border-gray-400`
-              }`}
+              className="w-[50vw] flex flex-col justify-center items-center gap-4 rounded-xl bg-white shadow-slate-300 shadow-2xl p-4"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
             >
-              <FaPlus className="text-2xl text-gray-600" />
-              <p>Drag and Drop your photo here or</p>
-              <label className="cursor-pointer text-blue-500 hover:text-blue-600">
-                <span>Select from your device</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={handleSelectFiles}
-                  accept="image/*"
-                ></input>
-              </label>
-              {photoSelectError && (
-                <p className="text-red-500 font-bold">{photoSelectError}</p>
-              )}
-            </div>
-
-            <div className="text-sm text-gray-600">
-              <p>• Accepted File: JPG, JPEG, PNG</p>
-              <p>• Size Max: 5MB</p>
-              <p>• Max Number of photos: {MAX_PHOTOS}</p>
-            </div>
-
-            <div className="flex gap-4">
-              <Button
-                size="small"
-                color="secondary"
+              <IoMdClose
+                className="text-2xl hover:scale-150 transition-transform self-end"
                 onClick={() => {
                   setIsModalOpen(false);
                   setPhotoSelectError(undefined);
                 }}
+              />
+
+              <h2 className="text-2xl font-bold">Upload your photo</h2>
+
+              <div
+                className={`h-[60vh] w-[33vw] bg-gray-100 hover:bg-gray-200 border-2 border-dashed rounded-xl flex flex-col justify-center items-center gap-4 ${
+                  isDragging ? `border-blue-400 bg-blue-200` : `border-gray-400`
+                }`}
               >
-                Cancel
-              </Button>
-              <Button size="small" color="primary">
-                Upload
-              </Button>
+                <FaPlus className="text-2xl text-gray-600" />
+                <p>Drag and Drop your photo here or</p>
+                <label className="cursor-pointer text-blue-500 hover:text-blue-600">
+                  <span>Select from your device</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={handleSelectFiles}
+                    accept="image/*"
+                  ></input>
+                </label>
+                {photoSelectError && (
+                  <p className="text-red-500 font-bold">{photoSelectError}</p>
+                )}
+              </div>
+
+              <div className="text-sm text-gray-600">
+                <p>• Accepted File: JPG, JPEG, PNG</p>
+                <p>• Size Max: 5MB</p>
+                <p>• Max Number of photos: {MAX_PHOTOS}</p>
+              </div>
+
+              <div className="flex gap-4">
+                <Button
+                  size="small"
+                  color="secondary"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setPhotoSelectError(undefined);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button size="small" color="primary">
+                  Upload
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
