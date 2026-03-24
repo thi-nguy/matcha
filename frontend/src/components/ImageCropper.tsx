@@ -1,12 +1,13 @@
 // --------- DOM - Approach (vs. Canvas approach) -----------------------------
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import throttle from "lodash/throttle";
 
 interface ImageCropperProps {
   imgUrl: string;
 }
 
 interface CropArea {
-  x: number;
+  x: number; // relative to image
   y: number;
   width: number;
   height: number;
@@ -24,6 +25,13 @@ interface DragState {
   resize: boolean;
 }
 
+interface DragStart {
+  mouseX: number;
+  mouseY: number;
+  cropX: number;
+  cropY: number;
+}
+
 export const ImageCropper: React.FC<ImageCropperProps> = ({ imgUrl }) => {
   const [cropArea, setCropArea] = useState<CropArea>({
     x: 150,
@@ -37,14 +45,21 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({ imgUrl }) => {
     resize: false,
   });
 
-  const imgRef = useRef<HTMLImageElement>(null);
-
   const [imgArea, setImgArea] = useState<ImgArea>({
-    x: 0,
+    x: 0, // relative to viewport
     y: 0,
-    width: 0,
+    width: 0, // offset width, not real width
     height: 0,
   });
+
+  const [dragStart, setDragStart] = useState<DragStart>({
+    mouseX: 0, // mouse coordinate while dragging
+    mouseY: 0,
+    cropX: 0, // ?
+    cropY: 0,
+  });
+
+  const imgRef = useRef<HTMLImageElement>(null);
 
   const handleImgLoad = () => {
     if (imgRef.current) {
@@ -66,6 +81,56 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({ imgUrl }) => {
     return `polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, ${leftPercent} ${topPercent}, ${leftPercent} ${bottomPercent}, ${rightPercent} ${bottomPercent}, ${rightPercent} ${topPercent}, ${leftPercent} ${topPercent})`;
   };
 
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    setDragState({ ...dragState, move: true });
+    setDragStart({
+      ...dragStart,
+      mouseX: event.clientX,
+      mouseY: event.clientY,
+    });
+  };
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (!dragState.move) return;
+    const deltaX = event.clientX - dragStart.mouseX;
+    const deltaY = event.clientY - dragStart.mouseY;
+    const newX = cropArea.x + deltaX;
+    const newY = cropArea.y + deltaY;
+    if (
+      newX >= 0 &&
+      newX <= imgArea.width - cropArea.width &&
+      newY >= 0 &&
+      newY <= imgArea.height - cropArea.height
+    ) {
+      setCropArea({
+        ...cropArea,
+        x: newX,
+        y: newY,
+      });
+    }
+  };
+
+  const throttleHandleMouseMove = throttle(handleMouseMove, 16);
+
+  const handleMouseUp = (event: MouseEvent) => {
+    setDragState({ move: false, resize: false });
+    setDragStart({
+      ...dragStart,
+      mouseX: event.clientX,
+      mouseY: event.clientY,
+    });
+  };
+  useEffect(() => {
+    if (dragState.move) {
+      document.addEventListener("mousemove", throttleHandleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      return () => {
+        document.removeEventListener("mousemove", throttleHandleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
+  }, [dragState.move]);
+
   return (
     <div className="relative">
       <img
@@ -75,6 +140,16 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({ imgUrl }) => {
         onLoad={handleImgLoad}
       />
       <div
+        className="absolute bg-transparent border-2 border-dashed border-white cursor-move"
+        style={{
+          top: `${(cropArea.y / imgArea.height) * 100}%`,
+          left: `${(cropArea.x / imgArea.width) * 100}%`,
+          width: `${(cropArea.width / imgArea.width) * 100}%`,
+          height: `${(cropArea.height / imgArea.height) * 100}%`,
+        }}
+        onMouseDown={handleMouseDown}
+      ></div>
+      <div
         className="absolute inset-0 bg-black opacity-50"
         style={{
           clipPath: generateClipPath(cropArea, imgArea.height, imgArea.width),
@@ -83,3 +158,6 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({ imgUrl }) => {
     </div>
   );
 };
+function useCallBack(arg0: (event: MouseEvent) => void, arg1: never[]) {
+  throw new Error("Function not implemented.");
+}
